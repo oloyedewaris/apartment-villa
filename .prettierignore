@@ -1,0 +1,10 @@
+.next/
+node_modules/
+public/
+data/
+*.log
+*.tsbuildinfo
+verify-*.png
+
+# This stylesheet intentionally follows the compact structure of the migrated app.
+app/globals.css
