@@ -5,22 +5,16 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Loader } from "@/components/ui/Loader";
 import { canOpenUnit } from "@/lib/data";
-import type { Apartment, PlanRegistry } from "@/lib/types";
+import type { Apartment } from "@/lib/types";
 import { FilterSidebar } from "./FilterSidebar";
 import { UnitResults } from "./UnitResults";
 import type { ExplorerFilters } from "./types";
+import { ProjectFloorPlans, ProjectLocationPlan } from "./ProjectPlans";
 
 const BuildingViewer = dynamic(() => import("@/components/building/BuildingViewer").then((module) => module.BuildingViewer), {
   ssr: false,
   loading: () => (
     <div className="building-loading">
-      <Loader />
-    </div>
-  ),
-});
-const FloorPlanViewer = dynamic(() => import("@/components/floor-plans/FloorPlanViewer").then((module) => module.FloorPlanViewer), {
-  loading: () => (
-    <div className="plan-loading">
       <Loader />
     </div>
   ),
@@ -39,7 +33,7 @@ function matchesSearch(unit: Apartment, query: string) {
   return text.includes(normalized) || normalized.split(/[ ,]+/).every((part) => text.includes(part));
 }
 
-export function HomeExplorer({ apartments, plans }: { apartments: Apartment[]; plans: PlanRegistry }) {
+export function HomeExplorer({ apartments }: { apartments: Apartment[] }) {
   const router = useRouter();
   const unitsByNumber = useMemo(() => new Map(apartments.map((unit) => [String(Number(unit.number_num)), unit])), [apartments]);
   const bounds = useMemo(() => {
@@ -66,7 +60,7 @@ export function HomeExplorer({ apartments, plans }: { apartments: Apartment[]; p
     [bounds],
   );
   const [filters, setFilters] = useState<ExplorerFilters>(() => initialFilters);
-  const [view, setView] = useState<"model" | "plans">("model");
+  const [view, setView] = useState<"model" | "plans" | "location">("model");
   const [hoveredNumber, setHoveredNumber] = useState<string | null>(null);
   const [focusedNumber, setFocusedNumber] = useState<string | null>(null);
 
@@ -116,10 +110,13 @@ export function HomeExplorer({ apartments, plans }: { apartments: Apartment[]; p
       <section className="explorer-center">
         <nav className="home-view-tabs" aria-label="Explorer view">
           <button className={view === "model" ? "selected" : ""} onClick={() => setView("model")}>
-            360 model
+            3D model
           </button>
           <button className={view === "plans" ? "selected" : ""} onClick={() => setView("plans")}>
             Floor plans
+          </button>
+          <button className={view === "location" ? "selected" : ""} onClick={() => setView("location")}>
+            Location plan
           </button>
         </nav>
         {view === "model" ? (
@@ -133,8 +130,10 @@ export function HomeExplorer({ apartments, plans }: { apartments: Apartment[]; p
             onHover={setHoveredNumber}
             onSelect={openUnit}
           />
+        ) : view === "plans" ? (
+          <ProjectFloorPlans />
         ) : (
-          <FloorPlanViewer apartments={apartments} registry={plans} />
+          <ProjectLocationPlan />
         )}
       </section>
       <UnitResults

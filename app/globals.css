@@ -1804,6 +1804,97 @@ a {
 
 }
 
+.project-plan-view {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 84px 54px 92px;
+    background: #f2f5f0;
+    overflow: hidden
+}
+
+.project-plan-view>img {
+    display: block;
+    width: min(100%, 960px);
+    height: min(100%, 760px);
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px #53605218)
+}
+
+.project-floor-selector {
+    position: absolute;
+    z-index: 4;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 7px 6px 14px;
+    border: 1px solid #d7ddd4;
+    border-radius: 99px;
+    background: #fffffff2;
+    box-shadow: 0 8px 24px #41503f1c
+}
+
+.project-floor-selector>span {
+    color: #6e786d;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .08em
+}
+
+.project-floor-selector>div {
+    display: flex;
+    gap: 3px
+}
+
+.project-floor-selector button {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    color: #536052
+}
+
+.project-floor-selector button.selected {
+    background: #819a81;
+    color: #fff
+}
+
+.project-location-plan {
+    padding: 78px 24px 30px;
+    background: #e5ede5
+}
+
+.project-location-plan>img {
+    width: 100%;
+    height: 100%;
+    filter: none
+}
+
+.volta-unit-workspace .unit-plan-view {
+    background: #f4f2ed
+}
+
+.volta-unit-workspace .unit-plan-view img {
+    width: min(88%, 920px);
+    height: min(86%, 760px);
+    margin-top: 20px
+}
+
+.volta-unit-model .model-hint {
+    position: absolute;
+    z-index: 3;
+    right: 22px;
+    bottom: 18px;
+    color: #717672;
+    font-size: 11px
+}
+
 @media(max-width:700px) {
     .unit-brandbar {
         height: 62px !important

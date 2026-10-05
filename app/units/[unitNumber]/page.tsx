@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ReservationSidebar } from "@/components/reservation/ReservationSidebar";
 import { UnitWorkspace } from "@/components/units/UnitWorkspace";
 import { getApartments, getEsubDetails } from "@/lib/apartments";
-import { apartments as apartmentMetadata, assetRegistry, canOpenUnit, planRegistry } from "@/lib/data";
+import { apartments as apartmentMetadata } from "@/lib/data";
 import { formatArea, formatPrice } from "@/lib/format";
 
 export function generateStaticParams() {
@@ -35,22 +35,17 @@ export default async function UnitPage({ params }: { params: Promise<{ unitNumbe
   const esubDetails = await getEsubDetails();
 
   const unit = apartments.find((apartment) => Number(apartment.number_num) === Number(unitNumber));
-  if (!unit || !canOpenUnit(unit)) notFound();
+  if (!unit) notFound();
 
-  const asset = assetRegistry.units[unit.number_num];
+  const modelNumber = Number(unit.number_num);
+  const modelPath = modelNumber >= 37 && modelNumber <= 50 ? `/volta-uus-7/unit-models/${modelNumber}.glb` : null;
+  const planPath = `/volta-uus-7/unit-plans/${modelNumber}.svg`;
+  const floorPlanPath = `/volta-uus-7/floor-plans/${unit.floor}.svg`;
   const unitKind = Object.values(unit.function).find(Boolean) || "Apartment";
   const status = unit.allocated ? "sold" : "available";
   const statusLabel = unit.allocated ? "Sold" : "Available";
   const salesSubject = encodeURIComponent(`Myxellia unit ${unit.number}`);
   const salesEmail = `mailto:david@myxellia.io?subject=${salesSubject}`;
-  const floor = Number(unit.min_floor || unit.floor);
-  const tower = unit.house.identificator;
-  const planApartments = apartments.filter((apartment) => Number(apartment.min_floor || apartment.floor) === floor && apartment.house.identificator === tower);
-  const sourceFloor = floor >= 6 && floor <= 9 ? 6 : floor;
-  const unitPlans = {
-    [String(floor)]: { [tower]: planRegistry[String(floor)]?.[tower] },
-    ...(sourceFloor === floor ? {} : { [String(sourceFloor)]: { [tower]: planRegistry[String(sourceFloor)]?.[tower] } }),
-  };
 
   return (
     <div className="unit-page">
@@ -127,7 +122,7 @@ export default async function UnitPage({ params }: { params: Promise<{ unitNumbe
         </section>
       </aside>
 
-      <UnitWorkspace unit={unit} asset={asset} apartments={planApartments} plans={unitPlans} />
+      <UnitWorkspace unit={unit} modelPath={modelPath} planPath={planPath} floorPlanPath={floorPlanPath} />
 
       <ReservationSidebar
         esubDetails={esubDetails}

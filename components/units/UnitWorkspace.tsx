@@ -2,18 +2,11 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import type { Apartment, PlanRegistry, UnitAsset } from "@/lib/types";
+import type { Apartment } from "@/lib/types";
 import { Loader } from "@/components/ui/Loader";
 import { UnitPlan } from "./UnitPlan";
 
-const FloorPlanViewer = dynamic(() => import("@/components/floor-plans/FloorPlanViewer").then((module) => module.FloorPlanViewer), {
-  loading: () => (
-    <div className="plan-loading">
-      <Loader />
-    </div>
-  ),
-});
-const UnitModelViewer = dynamic(() => import("@/components/unit-model/UnitModelViewer").then((module) => module.UnitModelViewer), {
+const VoltaUnitModelViewer = dynamic(() => import("@/components/unit-model/VoltaUnitModelViewer").then((module) => module.VoltaUnitModelViewer), {
   ssr: false,
   loading: () => (
     <div className="model-state">
@@ -22,48 +15,42 @@ const UnitModelViewer = dynamic(() => import("@/components/unit-model/UnitModelV
   ),
 });
 
-export function UnitWorkspace({ unit, asset, apartments, plans }: { unit: Apartment; asset: UnitAsset; apartments: Apartment[]; plans: PlanRegistry }) {
-  const [view, setView] = useState<"model" | "interior" | "plan" | "floorPlan">("model");
+type UnitView = "model" | "plan" | "floorPlan";
+
+export function UnitWorkspace({
+  unit,
+  modelPath,
+  planPath,
+  floorPlanPath,
+}: {
+  unit: Apartment;
+  modelPath: string | null;
+  planPath: string;
+  floorPlanPath: string;
+}) {
+  const [view, setView] = useState<UnitView>(modelPath ? "model" : "plan");
   return (
-    <main className="unit-workspace" id="unit-stage">
+    <main className="unit-workspace volta-unit-workspace" id="unit-stage">
       <nav className="view-tabs" aria-label="Unit view">
-        <button className={view === "model" ? "selected" : ""} onClick={() => setView("model")}>
-          3D
-        </button>
-        <button className={view === "interior" ? "selected" : ""} onClick={() => setView("interior")}>
-          Interior
-        </button>
+        {modelPath && (
+          <button className={view === "model" ? "selected" : ""} onClick={() => setView("model")}>
+            3D vaade
+          </button>
+        )}
         <button className={view === "plan" ? "selected" : ""} onClick={() => setView("plan")}>
-          Plan
+          Apartment plan
         </button>
         <button className={view === "floorPlan" ? "selected" : ""} onClick={() => setView("floorPlan")}>
-          Floor Plan
+          Floor plan
         </button>
       </nav>
-      {view === "floorPlan" ? (
-        <FloorPlanViewer
-          apartments={apartments}
-          registry={plans}
-          initialFloor={Number(unit.floor)}
-          initialTower={unit.house.identificator}
-          activeUnitNumber={unit.number_num}
-          showControls={false}
-        />
-      ) : view === "plan" ? (
-        <UnitPlan unit={unit} />
+
+      {view === "model" && modelPath ? (
+        <VoltaUnitModelViewer modelPath={modelPath} />
+      ) : view === "floorPlan" ? (
+        <UnitPlan source={floorPlanPath} label={`Floor ${unit.floor} plan`} />
       ) : (
-        <UnitModelViewer asset={asset} floor={Number(unit.floor)} startInTour={view === "interior"} />
-      )}
-      {view === "floorPlan" && (
-        <aside className="unit-floor-stack" aria-label={`Floor ${unit.floor} in tower ${unit.house.identificator}`}>
-          <small>Tower {unit.house.identificator}</small>
-          <div>
-            {Array.from({ length: 12 }, (_, index) => index + 1).map((floor) => (
-              <span key={floor} className={floor === Number(unit.floor) ? "active" : ""} />
-            ))}
-          </div>
-          <p>Floor {unit.floor} of 12</p>
-        </aside>
+        <UnitPlan source={planPath} label={`Apartment ${unit.number} plan`} />
       )}
     </main>
   );
