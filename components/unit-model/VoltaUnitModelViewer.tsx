@@ -64,8 +64,10 @@ export function VoltaUnitModelViewer({ modelPath }: { modelPath: string }) {
       const radius = Math.max(size.x, size.y, size.z) * 0.58;
       controls.target.copy(center);
       controls.minDistance = Math.max(radius * 0.8, 0.5);
-      controls.maxDistance = Math.max(radius * 5, 5);
-      camera.position.copy(center).add(new THREE.Vector3(radius * 0.2, radius * 3.2, radius * 0.3));
+      const openingDistance = Math.max(radius * 5, 5);
+      controls.maxDistance = Math.max(radius * 9, 9);
+      const openingDirection = new THREE.Vector3(0.2, 3.2, 0.3).normalize();
+      camera.position.copy(center).addScaledVector(openingDirection, openingDistance);
       camera.near = Math.max(radius / 500, 0.01);
       camera.far = Math.max(radius * 30, 100);
       camera.updateProjectionMatrix();
