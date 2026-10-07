@@ -22,7 +22,8 @@ const BuildingViewer = dynamic(() => import("@/components/building/BuildingViewe
 
 function isCommercial(unit: Apartment) {
   const use = Object.values(unit.function).find(Boolean);
-  return !Number(unit.rooms_count) || ["Office", "Service", "Catering", "Retail"].includes(use || "");
+  const normalizedUse = use?.toLowerCase() ?? "";
+  return !Number(unit.rooms_count) || ["office", "service", "catering", "retail", "commercial", "business"].includes(normalizedUse);
 }
 
 function matchesSearch(unit: Apartment, query: string) {
@@ -37,22 +38,18 @@ export function HomeExplorer({ apartments }: { apartments: Apartment[] }) {
   const router = useRouter();
   const unitsByNumber = useMemo(() => new Map(apartments.map((unit) => [String(Number(unit.number_num)), unit])), [apartments]);
   const bounds = useMemo(() => {
-    const floors = apartments.map((unit) => Number(unit.min_floor || unit.floor)).filter(Number.isFinite);
     const areas = apartments.map((unit) => Number(unit.area_size_raw)).filter(Number.isFinite);
     const prices = apartments.map((unit) => Number(unit.discounted_price_raw || unit.price_raw)).filter((price) => price > 0);
     return {
-      floor: [Math.min(...floors), Math.max(...floors)] as [number, number],
       area: [Math.floor(Math.min(...areas)), Math.ceil(Math.max(...areas))] as [number, number],
-      price: [Math.floor(Math.min(...prices) / 10000) * 10000, Math.ceil(Math.max(...prices) / 10000) * 10000] as [number, number],
+      price: [Math.min(...prices), Math.max(...prices)] as [number, number],
     };
   }, [apartments]);
   const initialFilters = useMemo<ExplorerFilters>(
     () => ({
-      tower: "all",
       type: "all",
       availableOnly: false,
       rooms: "all",
-      floor: [...bounds.floor],
       area: [...bounds.area],
       price: [...bounds.price],
       search: "",
@@ -67,16 +64,12 @@ export function HomeExplorer({ apartments }: { apartments: Apartment[] }) {
   const visibleUnits = useMemo(
     () =>
       apartments.filter((unit) => {
-        const floor = Number(unit.min_floor || unit.floor),
-          area = Number(unit.area_size_raw),
+        const area = Number(unit.area_size_raw),
           price = Number(unit.discounted_price_raw || unit.price_raw || 0);
         return (
-          (filters.tower === "all" || unit.house.identificator === filters.tower) &&
           (filters.type === "all" || (filters.type === "commercial") === isCommercial(unit)) &&
           (!filters.availableOnly || !unit.allocated) &&
           (filters.rooms === "all" || Number(unit.rooms_count) === Number(filters.rooms)) &&
-          floor >= filters.floor[0] &&
-          floor <= filters.floor[1] &&
           area >= filters.area[0] &&
           area <= filters.area[1] &&
           (unit.allocated || price === 0 || (price >= filters.price[0] && price <= filters.price[1])) &&
@@ -89,12 +82,9 @@ export function HomeExplorer({ apartments }: { apartments: Apartment[] }) {
   const visibleNumbers = useMemo(() => new Set(visibleUnits.map((unit) => String(Number(unit.number_num)))), [visibleUnits]);
   const selectableNumbers = useMemo(() => new Set(visibleUnits.filter(canOpenUnit).map((unit) => String(Number(unit.number_num)))), [visibleUnits]);
   const filtersActive =
-    filters.tower !== initialFilters.tower ||
     filters.type !== initialFilters.type ||
     filters.availableOnly !== initialFilters.availableOnly ||
     filters.rooms !== initialFilters.rooms ||
-    filters.floor[0] !== initialFilters.floor[0] ||
-    filters.floor[1] !== initialFilters.floor[1] ||
     filters.area[0] !== initialFilters.area[0] ||
     filters.area[1] !== initialFilters.area[1] ||
     filters.price[0] !== initialFilters.price[0] ||
@@ -131,7 +121,7 @@ export function HomeExplorer({ apartments }: { apartments: Apartment[] }) {
             onSelect={openUnit}
           />
         ) : view === "plans" ? (
-          <ProjectFloorPlans />
+          <ProjectFloorPlans apartments={apartments} hoveredNumber={hoveredNumber} onHover={setHoveredNumber} onSelect={openUnit} />
         ) : (
           <ProjectLocationPlan />
         )}

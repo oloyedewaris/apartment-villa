@@ -28,10 +28,10 @@ await page.getByRole("button", { name: "Floor plans" }).click();
 const floors = [];
 for (const floor of [1, 2, 3, 4]) {
   await page.locator(`.project-floor-selector button`, { hasText: String(floor) }).click();
-  floors.push(await page.locator(`.project-plan-view img[src$="/${floor}.svg"]`).isVisible());
+  floors.push(await page.locator(`.interactive-project-plan image[href$="/${floor}.svg"]`).isVisible());
 }
 await page.getByRole("button", { name: "Location plan" }).click();
-const locationPlan = await page.locator('.project-location-plan img[src$="/location-plan.png"]').isVisible();
+const locationPlan = await page.locator('.interactive-location-plan image[href$="/location-plan.png"]').isVisible();
 const result = {
   rows: await page.locator(".result-row").count(),
   modelCanvas,

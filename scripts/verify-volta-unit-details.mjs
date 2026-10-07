@@ -26,7 +26,7 @@ const modelCanvas = await page.locator(".volta-unit-model canvas").evaluate((can
 await page.getByRole("button", { name: "Apartment plan" }).click();
 const apartmentPlan = await page.locator('.unit-plan-view img[src$="/50.svg"]').isVisible();
 await page.getByRole("button", { name: "Floor plan" }).click();
-const floorPlan = await page.locator('.unit-plan-view img[src$="/3.svg"]').isVisible();
+const floorPlan = await page.locator('.interactive-unit-floor-plan image[href$="/3.svg"]').isVisible();
 
 await page.goto("http://localhost:3001/units/9", { waitUntil: "networkidle", timeout: 120_000 });
 const noModelTabs = await page.locator(".view-tabs button").allTextContents();

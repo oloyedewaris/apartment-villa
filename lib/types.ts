@@ -21,6 +21,7 @@ export interface Apartment {
   area_size: string;
   extra_size_type: string | null;
   balcony_size_raw: string | null;
+  rent_raw?: string | null;
   status: UnitStatus;
   price_raw: string | null;
   discounted_price_raw: string | null;

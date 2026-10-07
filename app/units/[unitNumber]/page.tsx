@@ -29,29 +29,34 @@ const salesData = [
   },
 ];
 
+const finishingByUnit: Record<string, string> = {
+  "9": "Stuudio 1",
+  "37": "Deluxe 3",
+  "41": "Deluxe 3",
+  "46": "Deluxe 4",
+  "50": "Deluxe 4",
+};
+
 export default async function UnitPage({ params }: { params: Promise<{ unitNumber: string }> }) {
   const { unitNumber } = await params;
   const apartments = await getApartments();
   const esubDetails = await getEsubDetails();
-
   const unit = apartments.find((apartment) => Number(apartment.number_num) === Number(unitNumber));
   if (!unit) notFound();
 
   const modelNumber = Number(unit.number_num);
   const modelPath = modelNumber >= 37 && modelNumber <= 50 ? `/volta-uus-7/unit-models/${modelNumber}.glb` : null;
   const planPath = `/volta-uus-7/unit-plans/${modelNumber}.svg`;
-  const floorPlanPath = `/volta-uus-7/floor-plans/${unit.floor}.svg`;
   const unitKind = Object.values(unit.function).find(Boolean) || "Apartment";
-  const status = unit.allocated ? "sold" : "available";
-  const statusLabel = unit.allocated ? "Sold" : "Available";
+  const finishing = finishingByUnit[unit.number_num] || "-";
+  const ceilingHeight = unit.floor === "3" ? "up to 3.2 m" : "-";
+  const terrace = unit.balcony_size_raw ? `${unit.balcony_size_raw.replace(".", ",")} m²` : "-";
   const salesSubject = encodeURIComponent(`Myxellia unit ${unit.number}`);
-  const salesEmail = `mailto:david@myxellia.io?subject=${salesSubject}`;
 
   return (
     <div className="unit-page">
       <aside className="unit-details">
         <header className="unit-brandbar">
-          {/* <img src="/assets/logo.svg" alt="Myxellia" /> */}
           <Link href="/" aria-label="Back to all units">
             <span aria-hidden="true">←</span>
           </Link>
@@ -64,11 +69,7 @@ export default async function UnitPage({ params }: { params: Promise<{ unitNumbe
             <p>{unitKind}</p>
           </div>
 
-          <dl className="unit-facts">
-            <div>
-              <dt>Tower</dt>
-              <dd>{unit.house.identificator}</dd>
-            </div>
+          <dl className="unit-facts unit-facts-reference">
             <div>
               <dt>Floor</dt>
               <dd>{unit.floor}</dd>
@@ -82,32 +83,20 @@ export default async function UnitPage({ params }: { params: Promise<{ unitNumbe
               <dd>{formatArea(unit)}</dd>
             </div>
             <div>
-              <dt>{unit.extra_size_type || "Outdoor area"}</dt>
-              <dd>{unit.balcony_size_raw ? `${unit.balcony_size_raw} m²` : "-"}</dd>
+              <dt>Terrace</dt>
+              <dd>{terrace}</dd>
             </div>
             <div>
-              <dt>Status</dt>
-              <dd className={`unit-status status-${status}`}>{statusLabel}</dd>
-            </div>
-          </dl>
-
-          <div className="unit-price">
-            <span>Price</span>
-            <strong>{formatPrice(unit)}</strong>
-          </div>
-
-          <dl className="unit-extras">
-            <div>
-              <dt>View</dt>
-              <dd>{unit.view || "-"}</dd>
-            </div>
-            <div>
-              <dt>Interior finish</dt>
-              <dd>Myxellia</dd>
+              <dt>Finishing</dt>
+              <dd>{finishing}</dd>
             </div>
             <div>
               <dt>Ceiling height</dt>
-              <dd>2.9 m</dd>
+              <dd>{ceilingHeight}</dd>
+            </div>
+            <div className="unit-fact-price">
+              <dt>Price</dt>
+              <dd>{formatPrice(unit)}</dd>
             </div>
           </dl>
 
@@ -122,7 +111,7 @@ export default async function UnitPage({ params }: { params: Promise<{ unitNumbe
         </section>
       </aside>
 
-      <UnitWorkspace unit={unit} modelPath={modelPath} planPath={planPath} floorPlanPath={floorPlanPath} />
+      <UnitWorkspace unit={unit} floorUnits={apartments} modelPath={modelPath} planPath={planPath} />
 
       <ReservationSidebar
         esubDetails={esubDetails}

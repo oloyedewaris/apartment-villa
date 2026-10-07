@@ -4,7 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import type { Apartment } from "@/lib/types";
 import { Loader } from "@/components/ui/Loader";
-import { UnitPlan } from "./UnitPlan";
+import { UnitFloorPlan, UnitPlan } from "./UnitPlan";
 
 const VoltaUnitModelViewer = dynamic(() => import("@/components/unit-model/VoltaUnitModelViewer").then((module) => module.VoltaUnitModelViewer), {
   ssr: false,
@@ -19,14 +19,14 @@ type UnitView = "model" | "plan" | "floorPlan";
 
 export function UnitWorkspace({
   unit,
+  floorUnits,
   modelPath,
   planPath,
-  floorPlanPath,
 }: {
   unit: Apartment;
+  floorUnits: Apartment[];
   modelPath: string | null;
   planPath: string;
-  floorPlanPath: string;
 }) {
   const [view, setView] = useState<UnitView>(modelPath ? "model" : "plan");
   return (
@@ -48,7 +48,7 @@ export function UnitWorkspace({
       {view === "model" && modelPath ? (
         <VoltaUnitModelViewer modelPath={modelPath} />
       ) : view === "floorPlan" ? (
-        <UnitPlan source={floorPlanPath} label={`Floor ${unit.floor} plan`} />
+        <UnitFloorPlan unit={unit} units={floorUnits} />
       ) : (
         <UnitPlan source={planPath} label={`Apartment ${unit.number} plan`} />
       )}

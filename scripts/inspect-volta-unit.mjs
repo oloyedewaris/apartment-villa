@@ -29,5 +29,11 @@ const images = await page
     elements.map((element) => ({ src: element.currentSrc || element.getAttribute("src"), alt: element.getAttribute("alt"), classes: element.className })),
   );
 
-console.log(JSON.stringify({ slug, title: await page.title(), tabs, modelElements, images, assets: [...assets] }, null, 2));
+const bodyLines = (await page.locator("body").innerText())
+  .split("\n")
+  .map((line) => line.trim())
+  .filter(Boolean);
+const detailLabels = /^(floor|rooms|size|terrace|finishing|ceiling height|price)$/i;
+const details = bodyLines.flatMap((line, index) => (detailLabels.test(line) ? [[line, bodyLines[index + 1], bodyLines[index + 2]]] : []));
+console.log(JSON.stringify({ slug, title: await page.title(), tabs, modelElements, images, details, assets: [...assets] }, null, 2));
 await browser.close();

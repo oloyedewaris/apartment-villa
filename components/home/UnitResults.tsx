@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { canOpenUnit, sortUnitsByFloorDescending } from "@/lib/data";
-import { formatPrice } from "@/lib/format";
+import { formatCurrency, formatPrice } from "@/lib/format";
 import type { Apartment } from "@/lib/types";
 
 interface UnitResultsProps {
@@ -39,20 +39,19 @@ export function UnitResults({ units, total, search, hoveredNumber, onSearch, onH
         </span>
       </header>
       <div className="result-search">
-        <input
-          value={search}
-          onChange={(event) => onSearch(event.target.value)}
-          type="search"
-          placeholder="115, floor 5-9, tower B, 3 rooms"
-          aria-label="Search units"
-        />
+        <input value={search} onChange={(event) => onSearch(event.target.value)} type="search" placeholder="Nr, floor, rooms, size" aria-label="Search units" />
       </div>
       <div className="result-columns">
-        <span>No.</span>
-        <span>Twr</span>
-        <span>Fl</span>
-        <span>Rm</span>
-        <span>m²</span>
+        <span>Floor</span>
+        <span>Nr</span>
+        <span>Rooms</span>
+        <span>
+          Size <small>m²</small>
+        </span>
+        <span>
+          Balcony <small>m²</small>
+        </span>
+        <span>Rent</span>
         <span>Price</span>
       </div>
       <div className="result-rows" ref={rows}>
@@ -73,11 +72,12 @@ export function UnitResults({ units, total, search, hoveredNumber, onSearch, onH
                 if (!disabled) onSelect(unit.number_num);
               }}
             >
-              <strong>{unit.number}</strong>
-              <span>{unit.house.identificator}</span>
               <span>{unit.floor}</span>
+              <strong>{unit.number}</strong>
               <span>{unit.rooms_count || "-"}</span>
               <span>{unit.area_size_raw}</span>
+              <span>{unit.balcony_size_raw || "-"}</span>
+              <span>{unit.rent_raw ? formatCurrency(unit.rent_raw) : "-"}</span>
               <span>{formatPrice(unit)}</span>
             </button>
           );

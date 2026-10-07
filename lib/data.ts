@@ -12,6 +12,7 @@ interface SourceUnit {
   rooms: string;
   area: string;
   balcony: string;
+  rent?: string | null;
   type: string;
   price: string | null;
 }
@@ -30,6 +31,7 @@ export const apartments: Apartment[] = (sourceUnitsJson as SourceUnit[]).map((un
   area_size: unit.area.replace(".", ","),
   extra_size_type: Number(unit.balcony) > 0 ? "balcony" : null,
   balcony_size_raw: Number(unit.balcony) > 0 ? unit.balcony : null,
+  rent_raw: unit.rent ?? null,
   status: "available",
   price_raw: unit.price,
   discounted_price_raw: null,

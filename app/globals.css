@@ -844,7 +844,7 @@ a {
 .home-explorer {
     height: 100vh;
     display: grid;
-    grid-template-columns: 278px minmax(0, 1fr) 350px;
+    grid-template-columns: 278px minmax(0, 1fr) clamp(380px, 30vw, 430px);
     overflow: hidden
 }
 
@@ -1152,7 +1152,7 @@ a {
 .result-columns,
 .result-row {
     display: grid;
-    grid-template-columns: 15fr 10fr 20fr 5fr 15fr 35fr;
+    grid-template-columns: 10fr 12fr 12fr 13fr 16fr 15fr 22fr;
     align-items: center;
     white-space: nowrap;
     gap: 0;
@@ -1167,9 +1167,14 @@ a {
     letter-spacing: .1em
 }
 
-.result-columns span:nth-last-child(-n+2),
-.result-row span:nth-last-child(-n+2) {
+.result-columns span:nth-child(n+3),
+.result-row span:nth-child(n+3) {
     text-align: right
+}
+
+.result-columns small {
+    font: inherit;
+    text-transform: none
 }
 
 .result-rows {
@@ -1563,6 +1568,15 @@ a {
     font-size: 14px
 }
 
+.unit-facts-reference .unit-fact-price {
+    grid-column: 1 / -1;
+    border-right: 0
+}
+
+.unit-facts-reference .unit-fact-price dd {
+    font: 400 23px/1 var(--unit-serif)
+}
+
 .unit-facts .status-available {
     color: #1b8b5a;
     font-weight: 500
@@ -1822,6 +1836,65 @@ a {
     filter: drop-shadow(0 20px 40px #53605218)
 }
 
+.interactive-project-plan {
+    display: block;
+    width: min(100%, 960px);
+    height: min(100%, 760px);
+    overflow: visible;
+    filter: drop-shadow(0 20px 40px #53605218)
+}
+
+.project-unit {
+    cursor: pointer;
+    outline: none
+}
+
+.project-unit-shape {
+    fill: #9cb69c;
+    fill-opacity: .2;
+    stroke: transparent;
+    stroke-width: 4;
+    vector-effect: non-scaling-stroke;
+    transition: fill .16s ease, fill-opacity .16s ease, stroke .16s ease
+}
+
+.project-unit-label {
+    fill: #566956;
+    stroke: #566956;
+    stroke-width: 2;
+    transition: fill .16s ease, stroke .16s ease
+}
+
+.project-unit-label-text {
+    fill: #d9eadb;
+    font-size: 24px;
+    font-weight: 600;
+    pointer-events: none
+}
+
+.project-unit:hover .project-unit-shape,
+.project-unit:focus .project-unit-shape,
+.project-unit.active .project-unit-shape {
+    fill: #e68f67;
+    fill-opacity: .62;
+    stroke: #d77750
+}
+
+.project-unit:hover .project-unit-label,
+.project-unit:focus .project-unit-label,
+.project-unit.active .project-unit-label {
+    fill: #d77750;
+    stroke: #d77750
+}
+
+.project-unit.sold {
+    cursor: default
+}
+
+.project-unit.sold .project-unit-shape {
+    fill-opacity: .12
+}
+
 .project-floor-selector {
     position: absolute;
     z-index: 4;
@@ -1876,6 +1949,66 @@ a {
     filter: none
 }
 
+.interactive-location-plan {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible
+}
+
+.location-building {
+    cursor: pointer;
+    outline: none
+}
+
+.location-building>polygon,
+.location-building>rect {
+    fill: #9cb69c;
+    fill-opacity: 0;
+    stroke: transparent;
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+    transition: fill-opacity .18s ease, stroke .18s ease
+}
+
+.location-building:hover>polygon,
+.location-building:hover>rect,
+.location-building:focus>polygon,
+.location-building:focus>rect,
+.location-building.active>polygon,
+.location-building.active>rect {
+    fill-opacity: .5;
+    stroke: #7d9b7d
+}
+
+.location-building-tooltip {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    bottom: 34px;
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    min-width: 148px;
+    padding: 10px 16px;
+    border-radius: 4px;
+    background: #fff;
+    color: #566956;
+    box-shadow: 0 10px 30px #4353432e;
+    pointer-events: none
+}
+
+.location-building-tooltip strong {
+    font-size: 12px;
+    font-weight: 600
+}
+
+.location-building-tooltip span {
+    font-size: 10px;
+    color: #768776
+}
+
 .volta-unit-workspace .unit-plan-view {
     background: #f4f2ed
 }
@@ -1884,6 +2017,42 @@ a {
     width: min(88%, 920px);
     height: min(86%, 760px);
     margin-top: 20px
+}
+
+.volta-unit-workspace .interactive-unit-floor-plan .interactive-project-plan {
+    width: min(88%, 920px);
+    height: min(86%, 760px);
+    margin-top: 20px
+}
+
+.interactive-unit-floor-plan .project-unit.selected-unit .project-unit-shape {
+    stroke-width: 5
+}
+
+.unit-floor-selection {
+    position: absolute;
+    left: 26px;
+    bottom: 26px;
+    display: grid;
+    gap: 3px;
+    min-width: 96px;
+    padding: 11px 14px;
+    border-radius: 3px;
+    background: #fff;
+    color: #566956;
+    box-shadow: 0 8px 24px #41503f1c
+}
+
+.unit-floor-selection span {
+    color: #8a958a;
+    font-size: 9px;
+    letter-spacing: .08em;
+    text-transform: uppercase
+}
+
+.unit-floor-selection strong {
+    font-size: 13px;
+    font-weight: 600
 }
 
 .volta-unit-model .model-hint {

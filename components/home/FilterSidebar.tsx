@@ -3,7 +3,7 @@ import { RangeFilter } from "./RangeFilter";
 
 interface FilterSidebarProps {
   filters: ExplorerFilters;
-  bounds: { floor: [number, number]; area: [number, number]; price: [number, number] };
+  bounds: { area: [number, number]; price: [number, number] };
   onChange(filters: ExplorerFilters): void;
   onClear(): void;
 }
@@ -34,48 +34,30 @@ export function FilterSidebar({ filters, bounds, onChange, onClear }: FilterSide
   const update = <K extends keyof ExplorerFilters>(key: K, value: ExplorerFilters[K]) => onChange({ ...filters, [key]: value });
   return (
     <aside className="filter-sidebar">
-      <header>Filters</header>
+      <header>Filter</header>
       <div className="filter-content">
-        <section>
-          <label>Tower</label>
-          <Options
-            values={["all", "A", "B"] as const}
-            selected={filters.tower}
-            label={(value) => (value === "all" ? "All" : value)}
-            onSelect={(value) => update("tower", value)}
-          />
-        </section>
+        <label className="availability-toggle">
+          <span>Only available units</span>
+          <input type="checkbox" checked={filters.availableOnly} onChange={(event) => update("availableOnly", event.target.checked)} />
+        </label>
         <section className="unit-type-filter">
-          <label>Unit type</label>
+          <label>Type</label>
           <Options
-            values={["all", "apartment", "commercial"] as const}
+            values={["all", "commercial", "apartment"] as const}
             selected={filters.type}
-            label={(value) => (value === "all" ? "All" : value[0].toUpperCase() + value.slice(1))}
+            label={(value) => (value === "all" ? "All" : value === "commercial" ? "Business units" : "Apartment units")}
             onSelect={(value) => update("type", value)}
           />
         </section>
-        <label className="availability-toggle">
-          <span>Available only</span>
-          <input type="checkbox" checked={filters.availableOnly} onChange={(event) => update("availableOnly", event.target.checked)} />
-        </label>
         <section>
           <label>Rooms</label>
           <Options
-            values={["all", "1", "2", "3", "4", "5"] as const}
+            values={["all", "1", "2", "3", "4"] as const}
             selected={filters.rooms}
             label={(value) => (value === "all" ? "All" : value)}
             onSelect={(value) => update("rooms", value)}
           />
         </section>
-        <RangeFilter
-          label="Floor"
-          minimum={bounds.floor[0]}
-          maximum={bounds.floor[1]}
-          low={filters.floor[0]}
-          high={filters.floor[1]}
-          format={String}
-          onChange={(low, high) => update("floor", [low, high])}
-        />
         <RangeFilter
           label="Size"
           unit="m²"
@@ -93,12 +75,12 @@ export function FilterSidebar({ filters, bounds, onChange, onClear }: FilterSide
           maximum={bounds.price[1]}
           low={filters.price[0]}
           high={filters.price[1]}
-          step={10000}
+          step={1000}
           format={(value) => `${value.toLocaleString("en")} €`}
           onChange={(low, high) => update("price", [low, high])}
         />
         <button className="clear-filters" onClick={onClear}>
-          Clear filters
+          Cancel filters
         </button>
       </div>
       <a className="sidebar-credit" href="https://www.myxellia.io/">

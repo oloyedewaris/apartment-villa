@@ -2,7 +2,7 @@
   { "modelNumber": "1", "label": "T1", "floor": "1", "rooms": "1", "area": "185.2", "balcony": "36.2", "type": "catering", "price": "869900" },
   { "modelNumber": "2", "label": "T2", "floor": "1", "rooms": "1", "area": "122.9", "balcony": "20.2", "type": "catering", "price": "611000" },
   { "modelNumber": "3", "label": "B3", "floor": "1", "rooms": "1", "area": "122.9", "balcony": "0", "type": "bureau", "price": "579900" },
-  { "modelNumber": "4", "label": "B4", "floor": "1", "rooms": "1", "area": "53.9", "balcony": "0", "type": "bureau", "price": "339900" },
+  { "modelNumber": "4", "label": "B4", "floor": "1", "rooms": "1", "area": "53.9", "balcony": "0", "rent": "1520", "type": "bureau", "price": "339900" },
   { "modelNumber": "5", "label": "B5", "floor": "1", "rooms": "1", "area": "216.4", "balcony": "0", "type": "bureau", "price": "1134900" },
   { "modelNumber": "8", "label": "M8", "floor": "2", "rooms": "1", "area": "28.6", "balcony": "0", "type": "hostel", "price": null },
   { "modelNumber": "9", "label": "M9", "floor": "2", "rooms": "2", "area": "48.4", "balcony": "8.2", "type": "hostel", "price": "274900" },
@@ -47,6 +47,6 @@
   { "modelNumber": "48", "label": "48", "floor": "3", "rooms": "1", "area": "20.7", "balcony": "0", "type": "apartment", "price": null },
   { "modelNumber": "49", "label": "49", "floor": "3", "rooms": "3", "area": "61.1", "balcony": "6.5", "type": "apartment", "price": null },
   { "modelNumber": "50", "label": "50", "floor": "3", "rooms": "3", "area": "66.9", "balcony": "6.5", "type": "apartment", "price": "409900" },
-  { "modelNumber": "51", "label": "B51", "floor": "1", "rooms": "1", "area": "32", "balcony": "0", "type": "bureau", "price": "219900" },
-  { "modelNumber": "52", "label": "B52", "floor": "1", "rooms": "1", "area": "45.6", "balcony": "0", "type": "bureau", "price": "289900" }
+  { "modelNumber": "51", "label": "B51", "floor": "1", "rooms": "1", "area": "32", "balcony": "0", "rent": "990", "type": "bureau", "price": "219900" },
+  { "modelNumber": "52", "label": "B52", "floor": "1", "rooms": "1", "area": "45.6", "balcony": "0", "rent": "1410", "type": "bureau", "price": "289900" }
 ]
