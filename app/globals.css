@@ -844,7 +844,7 @@ a {
 .home-explorer {
     height: 100vh;
     display: grid;
-    grid-template-columns: 278px minmax(0, 1fr) clamp(380px, 30vw, 430px);
+    grid-template-columns: 278px minmax(0, 1fr) clamp(300px, 23vw, 330px);
     overflow: hidden
 }
 
@@ -1159,7 +1159,7 @@ a {
 }
 
 .result-columns {
-    padding: 7px 12px;
+    padding: 7px 8px;
     border-bottom: 1px solid var(--line);
     color: #806e5e;
     font-size: 7px;
@@ -1180,7 +1180,7 @@ a {
 .result-rows {
     flex: 1;
     overflow: auto;
-    padding: 0 8px
+    padding: 0 5px
 }
 
 .result-row {
